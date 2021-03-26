@@ -1,0 +1,427 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/error_box"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#80000000"
+        android:backgroundTint="#80000000"
+        android:backgroundTintMode="add"
+        android:orientation="horizontal">
+
+        <TextClock
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#80000000"
+            android:format12Hour="kk:mm:ss"
+            android:format24Hour="HH:mm:ss"
+            android:gravity="center_vertical|center_horizontal"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/islamic_date"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="The Islamic Date"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold">
+
+        </TextView>
+
+        <!-- <ImageButton
+             android:layout_width="wrap_content"
+             android:layout_height="match_parent"
+             android:layout_gravity="center_vertical"
+             android:gravity="center_vertical"
+             android:src="@drawable/ic_baseline_settings_24"
+             android:textSize="16sp"
+             android:textStyle="bold"
+             android:onClick="check"
+             android:background="@drawable/custom_button"
+             >
+         </ImageButton> -->
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/prayerBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:textAllCaps="true"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.smarteist.autoimageslider.SliderView
+            android:id="@+id/slider"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:backgroundTint="#FFFFFF"
+            app:sliderAnimationDuration="600"
+            app:sliderAutoCycleDirection="back_and_forth"
+            app:sliderAutoCycleEnabled="true"
+            app:sliderIndicatorEnabled="false"
+            app:sliderScrollTimeInSec="1"
+            app:sliderStartAutoCycle="true" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2">
+
+            <TextView
+                android:id="@+id/table_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Daily Prayer Times"
+                android:textAllCaps="true"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toRightOf="parent"
+                app:layout_constraintRight_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/hijri_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Current Hijri Date"
+                android:textAllCaps="true"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toRightOf="parent"
+                app:layout_constraintRight_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/table_title" />
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="*"
+                app:layout_constraintTop_toBottomOf="@+id/hijri_date">
+
+                <TableRow>
+
+                    <TextView
+                        android:id="@+id/prayer_name_col"
+                        style="@style/prayer_table_styles"
+                        android:text="" />
+
+                    <TextView
+                        android:id="@+id/icon_col"
+                        style="@style/prayer_table_styles"
+                        android:text="" />
+
+                    <TextView
+                        android:id="@+id/start_title"
+                        style="@style/prayer_table_styles"
+                        android:text="start" />
+
+                    <TextView
+                        android:id="@+id/jamat_title"
+                        style="@style/prayer_table_styles"
+                        android:text="Jamat" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:id="@+id/fajr"
+                        style="@style/prayer_table_styles"
+                        android:text="Fajr" />
+
+                    <ImageView
+                        android:id="@+id/fajr_icon"
+                        style="@style/prayer_table_styles"
+                        android:src="@drawable/ic_baseline_settings_24" />
+
+                    <TextView
+                        android:id="@+id/fajr_start"
+                        style="@style/prayer_table_styles"
+                        android:text="@string/time_placeholder" />
+
+                    <TextView
+                        android:id="@+id/fajr_jamat"
+                        style="@style/prayer_table_styles"
+                        android:text="@string/time_placeholder" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:id="@+id/dhuhr"
+                        style="@style/prayer_table_styles"
+                        android:text="Dhuhr" />
+
+                    <ImageView
+                        android:id="@+id/dhuhr_icon"
+                        style="@style/prayer_table_styles"
+                        android:src="@drawable/ic_baseline_settings_24" />
+
+                    <TextView
+                        android:id="@+id/dhuhr_start"
+                        style="@style/prayer_table_styles"
+                        android:text="@string/time_placeholder" />
+
+                    <TextView
+                        android:id="@+id/dhuhr_jamat"
+                        style="@style/prayer_table_styles"
+                        android:text="@string/time_placeholder" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:id="@+id/asr"
+                        style="@style/prayer_table_styles"
+                        android:text="Asr" />
+
+                    <ImageView
+                        android:id="@+id/asr_icon"
+                        style="@style/prayer_table_styles"
+                        android:src="@drawable/ic_baseline_settings_24" />
+
+                    <TextView
+                        android:id="@+id/asr_start"
+                        style="@style/prayer_table_styles"
+                        android:text="@string/time_placeholder" />
+
+                    <TextView
+                        android:id="@+id/asr_jamat"
+                        style="@style/prayer_table_styles"
+                        android:text="@string/time_placeholder" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:id="@+id/maghrib"
+                        style="@style/prayer_table_styles"
+                        android:text="Maghrib" />
+
+                    <ImageView
+                        android:id="@+id/maghrib_icon"
+                        style="@style/prayer_table_styles"
+                        android:src="@drawable/ic_baseline_settings_24" />
+
+                    <TextView
+                        android:id="@+id/maghrib_start"
+                        style="@style/prayer_table_styles"
+                        android:text="@string/time_placeholder" />
+
+                    <TextView
+                        android:id="@+id/maghrib_jamat"
+                        style="@style/prayer_table_styles"
+                        android:text="@string/time_placeholder" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:id="@+id/isha"
+                        style="@style/prayer_table_styles"
+                        android:text="Isha" />
+
+                    <ImageView
+                        android:id="@+id/isha_icon"
+                        style="@style/prayer_table_styles"
+                        android:src="@drawable/ic_baseline_settings_24" />
+
+                    <TextView
+                        android:id="@+id/isha_start"
+                        style="@style/prayer_table_styles"
+                        android:text="@string/time_placeholder" />
+
+                    <TextView
+                        android:id="@+id/isha_jamat"
+                        style="@style/prayer_table_styles"
+                        android:text="@string/time_placeholder" />
+                </TableRow>
+
+
+            </TableLayout>            <!--<TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/hijri_date"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/icon_col"
+                android:text=""
+                android:textAllCaps="true"
+                android:textSize="20sp"
+                android:id="@+id/prayer_name_col"
+                >
+            </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/hijri_date"
+                app:layout_constraintLeft_toRightOf="@id/prayer_name_col"
+                app:layout_constraintRight_toLeftOf="@+id/start_title"
+                android:text=""
+                android:textAllCaps="true"
+                android:textSize="20sp"
+                android:id="@+id/icon_col"
+                >
+            </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/hijri_date"
+                app:layout_constraintLeft_toRightOf="@+id/icon_col"
+                app:layout_constraintRight_toLeftOf="@+id/jamat_title"
+                android:text="start"
+                android:textAllCaps="true"
+                android:textSize="20sp"
+                android:gravity="right"
+                android:id="@+id/start_title"
+                >
+            </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                app:layout_constraintTop_toBottomOf="@+id/hijri_date"
+                app:layout_constraintLeft_toRightOf="@+id/start_title"
+                app:layout_constraintRight_toRightOf="parent"
+                android:text="Jamat"
+                android:textAllCaps="true"
+                android:textSize="20sp"
+                android:id="@+id/jamat_title"
+                >
+            </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@+id/prayer_name_col"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:text="Fajr"
+                android:textAllCaps="true"
+                android:textSize="20sp"
+                android:id="@+id/fajr"
+                >
+            </TextView>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@+id/icon_col"
+                app:layout_constraintLeft_toRightOf="@id/fajr"
+                android:textAllCaps="true"
+                android:textSize="20sp"
+                android:src="@drawable/ic_baseline_settings_24"
+                android:id="@+id/fajr_icon"
+                >
+            </ImageView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@+id/start_title"
+                app:layout_constraintLeft_toRightOf="@id/fajr_icon"
+                android:textAllCaps="true"
+                android:textSize="20sp"
+                android:text="@string/time_placeholder"
+                android:id="@+id/fajr_start"
+                >
+            </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                app:layout_constraintTop_toBottomOf="@+id/jamat_title"
+                app:layout_constraintLeft_toRightOf="@id/fajr_start"
+                app:layout_constraintRight_toRightOf="parent"
+                android:textAllCaps="true"
+                android:textSize="20sp"
+                android:text="@string/time_placeholder"
+                android:id="@+id/fajr_jamat"
+                >
+            </TextView> -->
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </LinearLayout>
+
+
+    <!--
+        ADD THESE TO ABOVE SLIDERVIEW IF YOU WANT TO SHOW INDICATORS FOR THE SLIDESHOW
+        app:sliderIndicatorAnimationDuration="600"
+       app:sliderIndicatorGravity="center_horizontal|bottom"
+       app:sliderIndicatorMargin="15dp"
+       app:sliderIndicatorOrientation="horizontal"
+       app:sliderIndicatorPadding="3dp"
+       app:sliderIndicatorRadius="2dp"
+       app:sliderIndicatorSelectedColor="#5A5A5A"
+       app:sliderIndicatorUnselectedColor="#FFF"
+    -->
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/custom_rectange"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="8dp"
+            android:text="LATEST UPDATES"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+
+            />
+
+
+        <TextView
+            android:id="@+id/newsBanner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="marquee"
+            android:gravity="center_vertical"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="This is a news banner to display the current news in the community!"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,4 @@
+<resources>
+
+    <style name="Theme.MosqueAishaTV" parent="@style/Theme.Leanback" />
+</resources>
