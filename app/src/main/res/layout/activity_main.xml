@@ -95,7 +95,12 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="2">
+            android:layout_weight="2"
+            android:layout_gravity="center_vertical"
+            android:foregroundGravity="center_vertical"
+            android:backgroundTint="@color/white"
+            android:foregroundTint="@color/white"
+            android:background="@color/white">
 
             <TextView
                 android:id="@+id/table_title"
@@ -107,6 +112,7 @@
                 android:textSize="20sp"
                 app:layout_constraintLeft_toRightOf="parent"
                 app:layout_constraintRight_toLeftOf="parent"
+                android:textColor="@color/dark"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -119,13 +125,15 @@
                 android:textSize="15sp"
                 app:layout_constraintLeft_toRightOf="parent"
                 app:layout_constraintRight_toLeftOf="parent"
+                android:textColor="@color/logo_color"
                 app:layout_constraintTop_toBottomOf="@+id/table_title" />
 
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:stretchColumns="*"
-                app:layout_constraintTop_toBottomOf="@+id/hijri_date">
+                app:layout_constraintTop_toBottomOf="@+id/hijri_date"
+                android:gravity="center_vertical">
 
                 <TableRow>
 
@@ -141,26 +149,28 @@
 
                     <TextView
                         android:id="@+id/start_title"
-                        style="@style/prayer_table_styles"
+                        style="@style/prayer_table_col_headings"
                         android:text="start" />
 
                     <TextView
                         android:id="@+id/jamat_title"
-                        style="@style/prayer_table_styles"
+                        style="@style/prayer_table_col_headings"
                         android:text="Jamat" />
                 </TableRow>
+
+
 
                 <TableRow>
 
                     <TextView
                         android:id="@+id/fajr"
-                        style="@style/prayer_table_styles"
+                        style="@style/prayer_table_prayer_names"
                         android:text="Fajr" />
 
                     <ImageView
                         android:id="@+id/fajr_icon"
                         style="@style/prayer_table_styles"
-                        android:src="@drawable/ic_baseline_settings_24" />
+                        android:src="@drawable/ic_icon_fajr" />
 
                     <TextView
                         android:id="@+id/fajr_start"
@@ -173,17 +183,22 @@
                         android:text="@string/time_placeholder" />
                 </TableRow>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/light"
+                    android:layout_marginHorizontal="5dp"/>
                 <TableRow>
 
                     <TextView
                         android:id="@+id/dhuhr"
-                        style="@style/prayer_table_styles"
+                        style="@style/prayer_table_prayer_names"
                         android:text="Dhuhr" />
 
                     <ImageView
                         android:id="@+id/dhuhr_icon"
                         style="@style/prayer_table_styles"
-                        android:src="@drawable/ic_baseline_settings_24" />
+                        android:src="@drawable/ic_icon_dhuhr" />
 
                     <TextView
                         android:id="@+id/dhuhr_start"
@@ -195,18 +210,22 @@
                         style="@style/prayer_table_styles"
                         android:text="@string/time_placeholder" />
                 </TableRow>
-
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/light"
+                    android:layout_marginHorizontal="5dp"/>
                 <TableRow>
 
                     <TextView
                         android:id="@+id/asr"
-                        style="@style/prayer_table_styles"
+                        style="@style/prayer_table_prayer_names"
                         android:text="Asr" />
 
                     <ImageView
                         android:id="@+id/asr_icon"
                         style="@style/prayer_table_styles"
-                        android:src="@drawable/ic_baseline_settings_24" />
+                        android:src="@drawable/ic_icon_asr" />
 
                     <TextView
                         android:id="@+id/asr_start"
@@ -218,18 +237,22 @@
                         style="@style/prayer_table_styles"
                         android:text="@string/time_placeholder" />
                 </TableRow>
-
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/light"
+                    android:layout_marginHorizontal="5dp"/>
                 <TableRow>
 
                     <TextView
                         android:id="@+id/maghrib"
-                        style="@style/prayer_table_styles"
+                        style="@style/prayer_table_prayer_names"
                         android:text="Maghrib" />
 
                     <ImageView
                         android:id="@+id/maghrib_icon"
                         style="@style/prayer_table_styles"
-                        android:src="@drawable/ic_baseline_settings_24" />
+                        android:src="@drawable/ic_icon_maghrib" />
 
                     <TextView
                         android:id="@+id/maghrib_start"
@@ -241,18 +264,22 @@
                         style="@style/prayer_table_styles"
                         android:text="@string/time_placeholder" />
                 </TableRow>
-
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/light"
+                    android:layout_marginHorizontal="5dp"/>
                 <TableRow>
 
                     <TextView
                         android:id="@+id/isha"
-                        style="@style/prayer_table_styles"
+                        style="@style/prayer_table_prayer_names"
                         android:text="Isha" />
 
                     <ImageView
                         android:id="@+id/isha_icon"
                         style="@style/prayer_table_styles"
-                        android:src="@drawable/ic_baseline_settings_24" />
+                        android:src="@drawable/ic_icon_isha" />
 
                     <TextView
                         android:id="@+id/isha_start"
@@ -264,7 +291,11 @@
                         style="@style/prayer_table_styles"
                         android:text="@string/time_placeholder" />
                 </TableRow>
-
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/light"
+                    android:layout_marginHorizontal="5dp"/>
 
             </TableLayout>            <!--<TextView
                 android:layout_width="wrap_content"

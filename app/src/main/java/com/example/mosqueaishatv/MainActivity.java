@@ -6,6 +6,9 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
@@ -37,6 +40,7 @@ public class MainActivity extends Activity {
     SliderView sliderView;
     TextView[] prayerTimeTableStart = new TextView[5];
     TextView[] prayerTimeTableJamat = new TextView[5];
+    TextView[] prayers = new TextView[5];
 
     String newsList = "";
     String bannerString = "";
@@ -85,8 +89,13 @@ public class MainActivity extends Activity {
                     prayerNames[i].toLowerCase()+"_jamat",
                     "id",
                     this.getPackageName());
+            int resourceIdPrayer = getResources().getIdentifier(
+                    prayerNames[i].toLowerCase(),
+                    "id",
+                    this.getPackageName());
             prayerTimeTableStart[i] = findViewById(resourceIdStart);
             prayerTimeTableJamat[i] = findViewById(resourceIdJamat);
+            prayers[i] = findViewById(resourceIdPrayer);
 
         }
 
@@ -100,8 +109,10 @@ public class MainActivity extends Activity {
             getDate();
             getNewsItems();
             getSlideShowItems();
+            String currentTime = sdf.format(new Date());
+            Date current = sdf.parse((currentTime));
 
-        } catch (JSONException e) {
+        } catch (JSONException | ParseException e) {
             e.printStackTrace();
         }
 
@@ -162,6 +173,8 @@ public class MainActivity extends Activity {
         prayerTimesBanner+= renderPrayerBanner(prayerStartTimes, prayerStartTimes, current);
         prayerTimesBanner += "<h3>JAMAT TIMES:</h3>";
         prayerTimesBanner+= renderPrayerBanner(prayerJamatTimes, prayerStartTimes, current);
+        //renderPrayers(prayerJamatTimes, prayerStartTimes, current );
+
         return prayerTimesBanner;
     }
 
@@ -215,6 +228,49 @@ public class MainActivity extends Activity {
         return prayerString;
     }
 
+    //Helper method to loop over an array of prayer times and generate the Strings in a combined String
+    //Use this method to loop over the Start time and Jammah time Arrays
+    public void renderPrayers(String[] times, String[] startTimes, Date currentTime) {
+        for (int i = 0; i< startTimes.length; i++) {
+            try {
+                Date prayerTime = sdf.parse(startTimes[i]);
+
+                //Check if not last prayer, so we can compare with next prayer
+                Log.d("time", i+" i value");
+                if (i != times.length - 1) {
+                    //Get the next prayer time
+                    Date next = sdf.parse(startTimes[i + 1]);
+                    //If current time between two prayers, current time for that prayer, so we render it green
+                    if ((currentTime.after(prayerTime) && currentTime.before(next)) || currentTime.equals(prayerTime)) {
+                        prayers[i].setTextColor(ContextCompat.getColor(this, R.color.green));
+                    }
+                    //Else the time has passed so we render it red
+                    else {
+                        prayers[i].setTextColor(ContextCompat.getColor(this, R.color.crimson));
+                    }
+                }
+
+                //Else Isha prayer, so just check if current time is after Isha time
+                else {
+                    //If current time after Isha time, we render it green
+                    if (currentTime.after(prayerTime) || currentTime.equals(prayerTime)) {
+                        prayers[i].setTextColor(ContextCompat.getColor(this, R.color.green));
+                    }
+                    //Else render it red
+                    else {
+                        prayers[i].setTextColor(ContextCompat.getColor(this, R.color.crimson));
+                    }
+                }
+
+
+            } catch (ParseException e) {
+                TextView errorBox = findViewById(R.id.error_box);
+                errorBox.setText("Api Failed to load prayer times - Restart App");
+                errorBox.setVisibility(View.VISIBLE);
+                e.printStackTrace();            }
+        }
+    }
+
     public void getPrayerTimes() throws JSONException {
         String location = getSharedPreferences("SharedPreferences", MODE_PRIVATE).getString("location", "niagara");
         MosqueAishaRestClient.get("/api/prayerTimes/times/"+location, null, new JsonHttpResponseHandler() {
@@ -226,7 +282,6 @@ public class MainActivity extends Activity {
                     for (int i=0; i<prayerNames.length; i++) {
                         prayerTimeTableStart[i].setText( (String) response.getJSONObject(i).get("start"));
                         prayerTimeTableJamat[i].setText( (String) response.getJSONObject(i).get("jamat"));
-
                         prayerStartTimes[i] = (String) response.getJSONObject(i).get("start");
                         prayerJamatTimes[i] = (String) response.getJSONObject(i).get("jamat");
                     }
@@ -235,7 +290,12 @@ public class MainActivity extends Activity {
                     prayerBanner.setText(Html.fromHtml(bannerString ));
                     prayerBanner.setSelected(true);
                     prayerBanner.setSingleLine(true);
-                } catch (JSONException e) {
+                    String currentTime = sdf.format(new Date());
+                    Date current = sdf.parse((currentTime));
+
+                    renderPrayers(prayerJamatTimes, prayerStartTimes, current );
+
+                } catch (JSONException | ParseException e) {
                     TextView errorBox = findViewById(R.id.error_box);
                     errorBox.setText("Api Failed to load prayer times - Restart App");
                     errorBox.setVisibility(View.VISIBLE);
