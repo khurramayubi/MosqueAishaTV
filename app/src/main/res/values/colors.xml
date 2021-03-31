@@ -10,7 +10,8 @@
     <color name="blue">#2196F3</color>
     <color name="crimson">#DC143C</color>
     <color name="dark">#212529</color>
-    <color name="light">#dee2e6</color>
+    <color name="light">#8E9295</color>
+    <color name="medium">#dee2e6</color>
     <color name="green">#088A08</color>
 
 </resources>

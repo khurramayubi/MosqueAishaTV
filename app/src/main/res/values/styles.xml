@@ -36,4 +36,15 @@
         <item name="android:textColor">@color/dark</item>
     </style>
 
+    <style name="prayer_table_headings_jumma">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:padding">2dp</item>
+        <item name="android:textColor">@color/dark</item>
+    </style>
+
 </resources>

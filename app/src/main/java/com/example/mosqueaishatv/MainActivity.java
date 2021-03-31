@@ -56,7 +56,7 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        prayerBanner = (TextView) this.findViewById(R.id.prayerBanner);
+        prayerBanner = new TextView(this);
         newsBanner = (TextView) this.findViewById(R.id.newsBanner);
         islamicDate = (TextView) this.findViewById(R.id.islamic_date);
         sliderView = findViewById(R.id.slider);
@@ -151,6 +151,13 @@ public class MainActivity extends Activity {
                     errorBox.setVisibility(View.VISIBLE);
                     e.printStackTrace();                }
             }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                Log.d("time", String.valueOf(errorResponse));
+                Log.d("time", String.valueOf(statusCode));
+            }
+
         });
 
     }
@@ -302,7 +309,17 @@ public class MainActivity extends Activity {
                     e.printStackTrace();                }
 
             }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                Log.d("time", String.valueOf(errorResponse));
+                Log.d("time", String.valueOf(statusCode));
+            }
+
+
         });
+
     }
 
     public void getNewsItems() throws JSONException {
@@ -327,6 +344,13 @@ public class MainActivity extends Activity {
                     errorBox.setVisibility(View.VISIBLE);
                     e.printStackTrace();
                 }
+
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                Log.d("time", String.valueOf(errorResponse));
+                Log.d("time", String.valueOf(statusCode));
 
             }
         });
@@ -359,6 +383,13 @@ public class MainActivity extends Activity {
                     errorBox.setVisibility(View.VISIBLE);
                     e.printStackTrace();
                 }
+
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                Log.d("time", String.valueOf(errorResponse));
+                Log.d("time", String.valueOf(statusCode));
 
             }
         });
