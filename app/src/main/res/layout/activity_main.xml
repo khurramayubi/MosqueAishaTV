@@ -99,16 +99,16 @@
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:foregroundGravity="center_vertical"
-            android:backgroundTint="@color/white"
-            android:foregroundTint="@color/white"
-            android:background="@color/white">
+            android:backgroundTint="@color/black"
+            android:foregroundTint="@color/black"
+            android:background="@color/black">
 
             <TextView
                 android:id="@+id/table_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="Daily Prayer Times"
+                android:text="Prayer Times"
                 android:textAllCaps="true"
                 android:textSize="20sp"
                 app:layout_constraintLeft_toRightOf="parent"
@@ -116,24 +116,12 @@
                 android:textColor="@color/dark"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/hijri_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="Current Hijri Date"
-                android:textAllCaps="true"
-                android:textSize="15sp"
-                app:layout_constraintLeft_toRightOf="parent"
-                app:layout_constraintRight_toLeftOf="parent"
-                android:textColor="@color/logo_color"
-                app:layout_constraintTop_toBottomOf="@+id/table_title" />
 
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:stretchColumns="*"
-                app:layout_constraintTop_toBottomOf="@+id/hijri_date"
+                app:layout_constraintTop_toBottomOf="@+id/table_title"
                 android:gravity="center_vertical">
 
                 <TableRow>
@@ -154,7 +142,7 @@
                         android:text="start" />
 
                     <TextView
-                        android:id="@+id/jamat_title"
+                        android:id="@+id/jammat_title"
                         style="@style/prayer_table_col_headings"
                         android:text="Jamat" />
                 </TableRow>
@@ -179,7 +167,7 @@
                         android:text="@string/time_placeholder" />
 
                     <TextView
-                        android:id="@+id/fajr_jamat"
+                        android:id="@+id/fajr_jammat"
                         style="@style/prayer_table_styles"
                         android:text="@string/time_placeholder" />
                 </TableRow>
@@ -207,7 +195,7 @@
                         android:text="@string/time_placeholder" />
 
                     <TextView
-                        android:id="@+id/dhuhr_jamat"
+                        android:id="@+id/dhuhr_jammat"
                         style="@style/prayer_table_styles"
                         android:text="@string/time_placeholder" />
                 </TableRow>
@@ -234,7 +222,7 @@
                         android:text="@string/time_placeholder" />
 
                     <TextView
-                        android:id="@+id/asr_jamat"
+                        android:id="@+id/asr_jammat"
                         style="@style/prayer_table_styles"
                         android:text="@string/time_placeholder" />
                 </TableRow>
@@ -261,7 +249,7 @@
                         android:text="@string/time_placeholder" />
 
                     <TextView
-                        android:id="@+id/maghrib_jamat"
+                        android:id="@+id/maghrib_jammat"
                         style="@style/prayer_table_styles"
                         android:text="@string/time_placeholder" />
                 </TableRow>
@@ -288,7 +276,7 @@
                         android:text="@string/time_placeholder" />
 
                     <TextView
-                        android:id="@+id/isha_jamat"
+                        android:id="@+id/isha_jammat"
                         style="@style/prayer_table_styles"
                         android:text="@string/time_placeholder" />
                 </TableRow>
@@ -308,19 +296,19 @@
                         android:text="" />
 
                     <TextView
-                        android:id="@+id/jumma_khutba_start"
-                        style="@style/prayer_table_headings_jumma"
+                        android:id="@+id/jummah_khutba_start"
+                        style="@style/prayer_table_headings_jummah"
                         android:text="Khutba" />
 
                     <TextView
-                        android:id="@+id/jumma_jamat_start"
-                        style="@style/prayer_table_headings_jumma"
+                        android:id="@+id/jummah_jammat_start"
+                        style="@style/prayer_table_headings_jummah"
                         android:text="Jamat" />
                 </TableRow>
 
                 <TableRow>
                     <TextView
-                        style="@style/prayer_table_headings_jumma"
+                        style="@style/prayer_table_headings_jummah"
                         android:text="Jummah 1" />
 
                     <TextView
@@ -329,17 +317,17 @@
 
                     <TextView
                         style="@style/prayer_table_col_headings"
-                        android:id="@+id/jumma_1_khutba"
+                        android:id="@+id/jummah_1_khutba"
                         android:text="" />
 
                     <TextView
                         style="@style/prayer_table_col_headings"
-                        android:id="@+id/jumma_1_jamat"
+                        android:id="@+id/jummah_1_jammat"
                         android:text="" />
                 </TableRow>
                 <TableRow>
                     <TextView
-                        style="@style/prayer_table_headings_jumma"
+                        style="@style/prayer_table_headings_jummah"
                         android:text="Jummah 2" />
 
                     <TextView
@@ -348,12 +336,12 @@
 
                     <TextView
                         style="@style/prayer_table_col_headings"
-                        android:id="@+id/jumma_2_khutba"
+                        android:id="@+id/jummah_2_khutba"
                         android:text="" />
 
                     <TextView
                         style="@style/prayer_table_col_headings"
-                        android:id="@+id/jumma_2_jamat"
+                        android:id="@+id/jummah_2_jammat"
                         android:text="" />
                 </TableRow>
 

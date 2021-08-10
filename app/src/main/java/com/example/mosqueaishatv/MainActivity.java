@@ -34,20 +34,17 @@ import cz.msebera.android.httpclient.Header;
 
 //Checking Git
 public class MainActivity extends Activity {
-    TextView prayerBanner;
     TextView newsBanner;
     TextView islamicDate;
     SliderView sliderView;
     TextView[] prayerTimeTableStart = new TextView[5];
     TextView[] prayerTimeTableJamat = new TextView[5];
-    TextView[] prayers = new TextView[5];
-
+    TextView[] prayerTimeTableName = new TextView[5];
+    TextView[] jummahKhutba = new TextView[2];
+    TextView[] jummahJammat = new TextView[2];
+    TextView errorBox;
     String newsList = "";
-    String bannerString = "";
-
     String[] prayerNames = new String[5];
-    String[] prayerJamatTimes = new String[5];
-    String[] prayerStartTimes = new String[5];
     ArrayList<SliderItem> sliderDataArrayList = new ArrayList<>();
 
     SimpleDateFormat sdf;
@@ -56,67 +53,56 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        prayerBanner = new TextView(this);
         newsBanner = (TextView) this.findViewById(R.id.newsBanner);
         islamicDate = (TextView) this.findViewById(R.id.islamic_date);
         sliderView = findViewById(R.id.slider);
-
-
-
-        prayerStartTimes[0] = "00:00";
-        prayerStartTimes[1] = "00:00";
-        prayerStartTimes[2] = "00:00";
-        prayerStartTimes[3] = "00:00";
-        prayerStartTimes[4] = "00:00";
-
-        prayerJamatTimes[0] = "00:00";
-        prayerJamatTimes[1] = "00:00";
-        prayerJamatTimes[2] = "00:00";
-        prayerJamatTimes[3] = "00:00";
-        prayerJamatTimes[4] = "00:00";
-
+        errorBox = this.findViewById(R.id.error_box);
         prayerNames[0] = "Fajr";
         prayerNames[1] = "Dhuhr";
         prayerNames[2] = "Asr";
         prayerNames[3] = "Maghrib";
         prayerNames[4] = "Isha";
-        for (int i=0; i<prayerTimeTableStart.length; i++) {
-            int resourceIdStart = getResources().getIdentifier(
-                    prayerNames[i].toLowerCase()+"_start",
-                    "id",
-                    this.getPackageName());
-            int resourceIdJamat = getResources().getIdentifier(
-                    prayerNames[i].toLowerCase()+"_jamat",
-                    "id",
-                    this.getPackageName());
-            int resourceIdPrayer = getResources().getIdentifier(
-                    prayerNames[i].toLowerCase(),
-                    "id",
-                    this.getPackageName());
-            prayerTimeTableStart[i] = findViewById(resourceIdStart);
-            prayerTimeTableJamat[i] = findViewById(resourceIdJamat);
-            prayers[i] = findViewById(resourceIdPrayer);
 
+        //Loop through to find all the textViews for each of the 5 prayers, adding them to the respective arrays
+        for (int i=0; i<prayerTimeTableStart.length; i++) {
+            String prayerName = prayerNames[i].toLowerCase();
+            int nameId = findResourceId(prayerName);
+            int startId = findResourceId(prayerName +"_start");
+            int jammatId = findResourceId(prayerName+"_jammat");
+            prayerTimeTableStart[i] = findViewById(startId);
+            prayerTimeTableJamat[i] = findViewById(jammatId);
+            prayerTimeTableName[i] = findViewById(nameId);
         }
 
+        //Find and add the jummah textviews
+        int jummahKhutba1Id = findResourceId("jummah_1_khutba");
+        int jummahKhutba2Id = findResourceId("jummah_2_khutba");
+        int jummahJammat1Id = findResourceId("jummah_1_jammat");
+        int jummahJammat2Id = findResourceId("jummah_2_jammat");
+
+        jummahKhutba[0] = findViewById(jummahKhutba1Id);
+        jummahKhutba[1] = findViewById(jummahKhutba2Id);
+        jummahJammat[0] = findViewById(jummahJammat1Id);
+        jummahJammat[1] = findViewById(jummahJammat2Id);
 
         sdf = new SimpleDateFormat("HH:mm", Locale.CANADA);
-
-        sdf.setTimeZone(TimeZone.getTimeZone("Canada/Eastern"));
+        //sdf.setTimeZone(TimeZone.getTimeZone("Canada/Eastern"));
 
         try {
+            String currentTime = sdf.format(new Date());
+            Date current = null;
+            current = sdf.parse((currentTime));
             getPrayerTimes();
+            getJummahTimes();
             getDate();
             getNewsItems();
             getSlideShowItems();
-            String currentTime = sdf.format(new Date());
-            Date current = sdf.parse((currentTime));
 
         } catch (JSONException | ParseException e) {
             e.printStackTrace();
         }
 
-        Timer timer = new Timer();
+       Timer timer = new Timer();
         try {
             timer.schedule(new TimerTask() {
                 @Override
@@ -124,20 +110,41 @@ public class MainActivity extends Activity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            prayerBanner.setText(Html.fromHtml(getPrayerBanner() ));
-                            prayerBanner.setSelected(true);
-                            prayerBanner.setSingleLine(true);
+                            try {
+                                String currentTime = sdf.format(new Date());
+                                Date current = null;
+                                current = sdf.parse((currentTime));
+                                updateColors(current);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
 
                 }
-            }, sdf.parse(prayerStartTimes[0]), 60000);
+            }, sdf.parse((String) prayerTimeTableStart[0].getText()), 60000);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
     }
 
+    /** Helper method to find the id of a resource.
+     * @param name Name of the resource (i.e. the ID used in .xml Files etc.)
+     * @return int Resource id. */
+    public int findResourceId(String name) {
+        return getResources().getIdentifier(name, "id", this.getPackageName());
+    }
+
+
+    /** Helper method to set the error box to visible and set the text message.
+     * @param msg The message to show in the error box. */
+    public void setErrorBox(String msg) {
+        errorBox.setText(msg);
+        errorBox.setVisibility(View.VISIBLE);
+    }
+
+    /** Gets the Islamic date from the API endpoint. */
     private void getDate() {
         MosqueAishaRestClient.get("/api/prayertimes/date", null, new JsonHttpResponseHandler() {
             @Override
@@ -146,182 +153,123 @@ public class MainActivity extends Activity {
                 try {
                     islamicDate.setText(response.getString("date"));
                 } catch (JSONException e) {
-                    TextView errorBox = findViewById(R.id.error_box);
-                    errorBox.setText("Api Failed to load date - Restart App");
-                    errorBox.setVisibility(View.VISIBLE);
-                    e.printStackTrace();                }
+                    setErrorBox("App failed to load date, restart app. \n Error: " + e);
+                    e.printStackTrace();
+                }
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
-                Log.d("time", String.valueOf(errorResponse));
-                Log.d("time", String.valueOf(statusCode));
             }
-
         });
 
     }
 
-    //Method to generate the complete prayer time string
-    public String  getPrayerBanner() {
-        String prayerTimesBanner = "";
-        String currentTime = sdf.format(new Date());
-        Date current = null;
 
-        try {
-            current = sdf.parse((currentTime));
-            Log.d("time", currentTime);
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        prayerTimesBanner+= "<h3>START TIMES:</h3>";
-        prayerTimesBanner+= renderPrayerBanner(prayerStartTimes, prayerStartTimes, current);
-        prayerTimesBanner += "<h3>JAMAT TIMES:</h3>";
-        prayerTimesBanner+= renderPrayerBanner(prayerJamatTimes, prayerStartTimes, current);
-        //renderPrayers(prayerJamatTimes, prayerStartTimes, current );
-
-        return prayerTimesBanner;
-    }
-
-    //Helper method to render the HTML prayer Strings (name and time ) with the appropriate color
-    public String renderIndividualPrayerTime(String color, String prayerName, String prayerTime) {
-        return "<h4>" + prayerName + ": <font color = " + color + ">" + prayerTime + " &nbsp </font> </h4>";
-    }
-
-    //Helper method to loop over an array of prayer times and generate the Strings in a combined String
-    //Use this method to loop over the Start time and Jammah time Arrays
-    public String renderPrayerBanner(String[] times, String[] startTimes, Date currentTime) {
-        String prayerString = "";
-        for (int i = 0; i< startTimes.length; i++) {
+    /** Method to update the colors of the prayers in the UI depending on the current time.
+     * @param currentTime The current time. */
+    public void updateColors(Date currentTime) {
+        for (int i = 0; i< prayerTimeTableStart.length; i++) {
             try {
-                Date prayerTime = sdf.parse(startTimes[i]);
-
+                Date prayerTime = sdf.parse((String) prayerTimeTableStart[i].getText());
+                TextView prayer = prayerTimeTableName[i];
                 //Check if not last prayer, so we can compare with next prayer
-                if (i != times.length - 1) {
+                if (i != prayerTimeTableStart.length - 1) {
                     //Get the next prayer time
-                    Date next = sdf.parse(startTimes[i + 1]);
+                    Date next = sdf.parse((String) prayerTimeTableStart[i + 1].getText());
                     //If current time between two prayers, current time for that prayer, so we render it green
                     if ((currentTime.after(prayerTime) && currentTime.before(next)) || currentTime.equals(prayerTime)) {
-                        prayerString += renderIndividualPrayerTime("green", prayerNames[i].toUpperCase(), times[i]);
+                        prayer.setTextColor(ContextCompat.getColor(this, R.color.green));
                     }
                     //Else the time has passed so we render it red
                     else {
-                        prayerString += renderIndividualPrayerTime("red", prayerNames[i].toUpperCase(), times[i]);
+                        prayer.setTextColor(ContextCompat.getColor(this, R.color.crimson));
                     }
                 }
-
                 //Else Isha prayer, so just check if current time is after Isha time
                 else {
                     //If current time after Isha time, we render it green
                     if (currentTime.after(prayerTime) || currentTime.equals(prayerTime)) {
-                        prayerString += renderIndividualPrayerTime("green", prayerNames[i].toUpperCase(), times[i]);
+                        prayer.setTextColor(ContextCompat.getColor(this, R.color.green));
                     }
                     //Else render it red
                     else {
-                        prayerString += renderIndividualPrayerTime("red", prayerNames[i].toUpperCase(), times[i]);
-
+                        prayer.setTextColor(ContextCompat.getColor(this, R.color.crimson));
                     }
                 }
-
-
             } catch (ParseException e) {
-                TextView errorBox = findViewById(R.id.error_box);
-                errorBox.setText("Api Failed to load prayer times - Restart App");
-                errorBox.setVisibility(View.VISIBLE);
-                e.printStackTrace();            }
-        }
-        return prayerString;
-    }
-
-    //Helper method to loop over an array of prayer times and generate the Strings in a combined String
-    //Use this method to loop over the Start time and Jammah time Arrays
-    public void renderPrayers(String[] times, String[] startTimes, Date currentTime) {
-        for (int i = 0; i< startTimes.length; i++) {
-            try {
-                Date prayerTime = sdf.parse(startTimes[i]);
-
-                //Check if not last prayer, so we can compare with next prayer
-                Log.d("time", i+" i value");
-                if (i != times.length - 1) {
-                    //Get the next prayer time
-                    Date next = sdf.parse(startTimes[i + 1]);
-                    //If current time between two prayers, current time for that prayer, so we render it green
-                    if ((currentTime.after(prayerTime) && currentTime.before(next)) || currentTime.equals(prayerTime)) {
-                        prayers[i].setTextColor(ContextCompat.getColor(this, R.color.green));
-                    }
-                    //Else the time has passed so we render it red
-                    else {
-                        prayers[i].setTextColor(ContextCompat.getColor(this, R.color.crimson));
-                    }
-                }
-
-                //Else Isha prayer, so just check if current time is after Isha time
-                else {
-                    //If current time after Isha time, we render it green
-                    if (currentTime.after(prayerTime) || currentTime.equals(prayerTime)) {
-                        prayers[i].setTextColor(ContextCompat.getColor(this, R.color.green));
-                    }
-                    //Else render it red
-                    else {
-                        prayers[i].setTextColor(ContextCompat.getColor(this, R.color.crimson));
-                    }
-                }
-
-
-            } catch (ParseException e) {
-                TextView errorBox = findViewById(R.id.error_box);
-                errorBox.setText("Api Failed to load prayer times - Restart App");
-                errorBox.setVisibility(View.VISIBLE);
-                e.printStackTrace();            }
+                setErrorBox("App failed to change colors, restart app. \n Error: " + e);
+                e.printStackTrace();
+            }
         }
     }
 
     public void getPrayerTimes() throws JSONException {
         String location = getSharedPreferences("SharedPreferences", MODE_PRIVATE).getString("location", "niagara");
-        MosqueAishaRestClient.get("/api/prayerTimes/times/"+location, null, new JsonHttpResponseHandler() {
+        MosqueAishaRestClient.get("/api/prayerTimes/times/regular/"+location, null, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
                 try {
-                    Log.d("time", String.valueOf(response.getJSONObject(0).get("name")));
                     for (int i=0; i<prayerNames.length; i++) {
                         prayerTimeTableStart[i].setText( (String) response.getJSONObject(i).get("start"));
-                        prayerTimeTableJamat[i].setText( (String) response.getJSONObject(i).get("jamat"));
-                        prayerStartTimes[i] = (String) response.getJSONObject(i).get("start");
-                        prayerJamatTimes[i] = (String) response.getJSONObject(i).get("jamat");
+                        if (i==3) { //If maghrib, set to the Jammat time to same as start time for Maghrib
+                            prayerTimeTableJamat[i].setText( (String) response.getJSONObject(i).get("start"));
+
+                        }
+                        else {
+                            prayerTimeTableJamat[i].setText( (String) response.getJSONObject(i).get("jamat"));
+                        }
                     }
-                    bannerString = getPrayerBanner();
-                    //Set prayer banner properties; These should be set after the String has been generated and set, to give the marquee effect
-                    prayerBanner.setText(Html.fromHtml(bannerString ));
-                    prayerBanner.setSelected(true);
-                    prayerBanner.setSingleLine(true);
                     String currentTime = sdf.format(new Date());
                     Date current = sdf.parse((currentTime));
-
-                    renderPrayers(prayerJamatTimes, prayerStartTimes, current );
+                    updateColors(current);
 
                 } catch (JSONException | ParseException e) {
-                    TextView errorBox = findViewById(R.id.error_box);
-                    errorBox.setText("Api Failed to load prayer times - Restart App");
-                    errorBox.setVisibility(View.VISIBLE);
-                    e.printStackTrace();                }
-
+                    setErrorBox("App failed to load prayer times, restart app. \n Error: " + e);
+                    e.printStackTrace();
+                }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
-                Log.d("time", String.valueOf(errorResponse));
-                Log.d("time", String.valueOf(statusCode));
             }
-
-
         });
-
     }
 
+    public void getJummahTimes() throws JSONException {
+        String location = getSharedPreferences("SharedPreferences", MODE_PRIVATE).getString("location", "niagara");
+        MosqueAishaRestClient.get("/api/prayerTimes/times/jummah/"+location, null, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    JSONObject respOne = response.getJSONObject(0);
+                    JSONObject respTwo = response.getJSONObject(1);
+                    if (respOne != null && respTwo != null) {
+                        jummahJammat[0].setText( (String) (respOne.get("jammat")));
+                        jummahJammat[1].setText( (String) (respTwo.get("jammat")));
+                        jummahKhutba[0].setText( (String) (respOne.get("khutba")));
+                        jummahKhutba[1].setText( (String) (respTwo.get("khutba")));
+                    }
+
+                } catch (JSONException e) {
+                    setErrorBox("App failed to load Jummah times, restart app. \n Error: " + e);
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+        });
+    }
+
+    /**
+     * Gets the news items from the news API endpoint, adding them to between <h4> HTML tags for rendering in the marquee.
+     * @throws JSONException
+     */
     public void getNewsItems() throws JSONException {
         MosqueAishaRestClient.get("/api/news", null, new JsonHttpResponseHandler() {
             @Override
@@ -329,40 +277,36 @@ public class MainActivity extends Activity {
                 super.onSuccess(statusCode, headers, response);
                 try {
                     for (int i=0; i<response.length(); i++) {
-                        newsList += ("<h4>"+response.get(i).toString()+"</h4>&emsp");
+                        if (response.getString(i) != null) {
+                            newsList += ("<h4>"+response.get(i).toString()+"</h4>&emsp");
+                        }
                     }
-
-                    //Set ews banner properties; These should be set after the String has been generated and set, to give the marquee effect
+                    //Set news banner properties; These should be set after the String has been generated and set, to give the marquee effect
                     newsBanner.setText(Html.fromHtml(newsList));
                     newsBanner.setSelected(true);
                     newsBanner.setSingleLine(true);
-
-
                 } catch (JSONException e) {
-                    TextView errorBox = findViewById(R.id.error_box);
-                    errorBox.setText("Api Failed to load News - Restart App");
-                    errorBox.setVisibility(View.VISIBLE);
+                    setErrorBox("App failed to load news items, restart app. \n Error: " + e);
                     e.printStackTrace();
                 }
-
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
-                Log.d("time", String.valueOf(errorResponse));
-                Log.d("time", String.valueOf(statusCode));
-
             }
         });
     }
 
+    /**
+     * Gets the items from the slideshow api endpoint.
+     * @throws JSONException
+     */
     public void getSlideShowItems() throws JSONException {
         MosqueAishaRestClient.get("/api/slideshow", null, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
                 try {
-                    Log.d("time", String.valueOf(response));
                     for (int i=0; i<response.length(); i++) {
                         sliderDataArrayList.add(new SliderItem("https://www.mosqueaisha.ca/api/slideshow/" + response.getString(i)));
                     }
@@ -372,25 +316,17 @@ public class MainActivity extends Activity {
                     sliderView.setSliderTransformAnimation(SliderAnimations.FADETRANSFORMATION);
                     sliderView.setSliderAnimationDuration(3000);
                     sliderView.setSliderAdapter(adapter);
-                    sliderView.setScrollTimeInSec(6);
+                    sliderView.setScrollTimeInSec(10);
                     sliderView.setAutoCycle(true);
                     sliderView.startAutoCycle();
-
-
                 } catch (JSONException e) {
-                    TextView errorBox = findViewById(R.id.error_box);
-                    errorBox.setText("Api Failed to load pictures - Restart App");
-                    errorBox.setVisibility(View.VISIBLE);
+                    setErrorBox("App failed to load slideshow, restart app. \n Error: " + e);
                     e.printStackTrace();
                 }
-
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
-                Log.d("time", String.valueOf(errorResponse));
-                Log.d("time", String.valueOf(statusCode));
-
             }
         });
     }
