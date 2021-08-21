@@ -1,10 +1,12 @@
 package com.example.mosqueaishatv;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
@@ -46,13 +48,16 @@ public class MainActivity extends Activity {
     String newsList = "";
     String[] prayerNames = new String[5];
     ArrayList<SliderItem> sliderDataArrayList = new ArrayList<>();
+    //MediaPlayer mp = null;
 
     SimpleDateFormat sdf;
+    SimpleDateFormat _24HourSDF;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //mp =  MediaPlayer.create(this, R.raw.test);
         newsBanner = (TextView) this.findViewById(R.id.newsBanner);
         islamicDate = (TextView) this.findViewById(R.id.islamic_date);
         sliderView = findViewById(R.id.slider);
@@ -85,7 +90,9 @@ public class MainActivity extends Activity {
         jummahJammat[0] = findViewById(jummahJammat1Id);
         jummahJammat[1] = findViewById(jummahJammat2Id);
 
-        sdf = new SimpleDateFormat("HH:mm", Locale.CANADA);
+        sdf = new SimpleDateFormat("hh:mm", Locale.CANADA);
+        _24HourSDF = new SimpleDateFormat("HH:mm");
+
         //sdf.setTimeZone(TimeZone.getTimeZone("Canada/Eastern"));
 
         try {
@@ -114,6 +121,7 @@ public class MainActivity extends Activity {
                                 String currentTime = sdf.format(new Date());
                                 Date current = null;
                                 current = sdf.parse((currentTime));
+                                updateColors(current);
                                 updateColors(current);
                             } catch (ParseException e) {
                                 e.printStackTrace();
@@ -174,6 +182,14 @@ public class MainActivity extends Activity {
                 Date prayerTime = sdf.parse((String) prayerTimeTableStart[i].getText());
                 TextView prayer = prayerTimeTableName[i];
                 //Check if not last prayer, so we can compare with next prayer
+               /* if (currentTime.equals(prayerTime)) {
+                    mp.start();
+                    mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        public void onCompletion(MediaPlayer mp) {
+                            mp.release();
+                        }
+                    });
+                }*/
                 if (i != prayerTimeTableStart.length - 1) {
                     //Get the next prayer time
                     Date next = sdf.parse((String) prayerTimeTableStart[i + 1].getText());
@@ -212,13 +228,13 @@ public class MainActivity extends Activity {
                 super.onSuccess(statusCode, headers, response);
                 try {
                     for (int i=0; i<prayerNames.length; i++) {
-                        prayerTimeTableStart[i].setText( (String) response.getJSONObject(i).get("start"));
+                        prayerTimeTableStart[i].setText((sdf.format(_24HourSDF.parse((String) response.getJSONObject(i).get("start")))));
                         if (i==3) { //If maghrib, set to the Jammat time to same as start time for Maghrib
-                            prayerTimeTableJamat[i].setText( (String) response.getJSONObject(i).get("start"));
+                            prayerTimeTableJamat[i].setText((sdf.format(_24HourSDF.parse((String) response.getJSONObject(i).get("start")))));
 
                         }
                         else {
-                            prayerTimeTableJamat[i].setText( (String) response.getJSONObject(i).get("jamat"));
+                            prayerTimeTableJamat[i].setText((sdf.format(_24HourSDF.parse((String) response.getJSONObject(i).get("jamat")))));
                         }
                     }
                     String currentTime = sdf.format(new Date());
@@ -226,7 +242,7 @@ public class MainActivity extends Activity {
                     updateColors(current);
 
                 } catch (JSONException | ParseException e) {
-                    setErrorBox("App failed to load prayer times, restart app. \n Error: " + e);
+                    setErrorBox("App failed to load prayer times, restart app. \n Error: " + e +"\n");
                     e.printStackTrace();
                 }
             }
@@ -255,7 +271,7 @@ public class MainActivity extends Activity {
                     }
 
                 } catch (JSONException e) {
-                    setErrorBox("App failed to load Jummah times, restart app. \n Error: " + e);
+                    setErrorBox("App failed to load Jummah times, restart app. \n Error: " + e+"\n");
                     e.printStackTrace();
                 }
             }
@@ -314,9 +330,9 @@ public class MainActivity extends Activity {
                     SliderAdapter adapter = new SliderAdapter(this, sliderDataArrayList);
                     sliderView.setAutoCycleDirection(SliderView.LAYOUT_DIRECTION_LTR);
                     sliderView.setSliderTransformAnimation(SliderAnimations.FADETRANSFORMATION);
-                    sliderView.setSliderAnimationDuration(3000);
+                    sliderView.setSliderAnimationDuration(100);
                     sliderView.setSliderAdapter(adapter);
-                    sliderView.setScrollTimeInSec(10);
+                    sliderView.setScrollTimeInSec(5);
                     sliderView.setAutoCycle(true);
                     sliderView.startAutoCycle();
                 } catch (JSONException e) {
